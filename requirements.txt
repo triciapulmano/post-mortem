@@ -1,0 +1,9 @@
+psycopg2-binary
+python-dotenv
+instaloader
+tweepy
+google-generativeai
+fastapi
+uvicorn
+pandas
+prefect
