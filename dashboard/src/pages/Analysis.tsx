@@ -9,6 +9,7 @@ export default function AnalysisPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<Analysis | null>(location.state || null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!data && id) getAnalysis(id).then(setData);
   }, [id]);
