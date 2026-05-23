@@ -108,6 +108,7 @@ post-mortem/
 ├── etl/
 │   ├── extractors/
 │   │   └── instagram.py      # Apify-based Instagram fetcher
+│   │   └── tiktok.py         # Apify-based TikTok fetcher
 │   ├── transformers/
 │   │   └── normalize.py      # Normalization + account average computation
 │   ├── loaders/
