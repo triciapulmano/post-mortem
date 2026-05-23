@@ -1,7 +1,7 @@
 psycopg2-binary
 python-dotenv
 instaloader
-apify-client
+apify-client==2.5.0
 google-genai
 fastapi
 uvicorn
