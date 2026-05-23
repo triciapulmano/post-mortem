@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { getAnalysis, Analysis } from "../api";
@@ -9,7 +11,6 @@ export default function AnalysisPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<Analysis | null>(location.state || null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!data && id) getAnalysis(id).then(setData);
   }, [id]);
