@@ -67,6 +67,7 @@ def get_analyses():
 def get_analysis(analysis_id: str):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     cur.execute("""
         SELECT
             a.id as analysis_id,
@@ -85,6 +86,7 @@ def get_analysis(analysis_id: str):
             p.comments,
             p.engagement_rate,
             p.posted_at,
+            p.account_id,
             ac.handle,
             ac.platform
         FROM analyses a
@@ -92,16 +94,15 @@ def get_analysis(analysis_id: str):
         JOIN accounts ac ON p.account_id = ac.id
         WHERE a.id = %s
     """, (analysis_id,))
+
     row = cur.fetchone()
-    cur.close()
-    conn.close()
     if not row:
+        cur.close()
+        conn.close()
         raise HTTPException(status_code=404, detail="Analysis not found")
-    
-    # extract account_id before converting to dict
-    account_id = row["account_id"]
+
     result = dict(row)
-    result.pop("account_id")
+    account_id = result.pop("account_id")
 
     # compute account averages from cached posts
     cur.execute("""
