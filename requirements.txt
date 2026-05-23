@@ -1,9 +1,11 @@
 psycopg2-binary
 python-dotenv
 instaloader
-tweepy
-google-generativeai
+apify-client
+google-genai
 fastapi
 uvicorn
 pandas
+numpy
 prefect
+pydantic
