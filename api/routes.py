@@ -98,6 +98,8 @@ def get_analysis(analysis_id: str):
     if not row:
         raise HTTPException(status_code=404, detail="Analysis not found")
     
+    # extract account_id before converting to dict
+    account_id = row["account_id"]
     result = dict(row)
     account_id = result.pop("account_id")
 
