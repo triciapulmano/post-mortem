@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from etl.extractors.instagram import get_post_data, get_account_history
+from etl.extractors.instagram import get_post_data as ig_get_post, get_account_history as ig_get_history
+from etl.extractors.tiktok import get_post_data as tt_get_post, get_account_history as tt_get_history
 from etl.transformers.normalize import normalize_post, normalize_account, compute_account_averages, normalize_post as normalize_history_post
 from etl.loaders.db import upsert_account, upsert_post, upsert_posts_bulk, get_account_posts, get_benchmark, save_analysis
 from ai.analyzer import analyze_post
@@ -15,7 +16,13 @@ def run(url: str, niche: str = "lifestyle") -> dict:
     print(f"      Platform: {platform}")
 
     print(f"\n[2/6] Fetching post data...")
-    raw_post = get_post_data(url)
+    if platform == "instagram":
+        raw_post = ig_get_post(url)
+    elif platform == "tiktok":
+        raw_post = tt_get_post(url)
+    else:
+        raise ValueError(f"Unsupported platform: {platform}")
+
     post = normalize_post(raw_post)
     account = normalize_account(raw_post)
     print(f"      Post by @{account['handle']} — {post['content_type']} — {post['engagement_rate']}% eng.")
@@ -30,8 +37,11 @@ def run(url: str, niche: str = "lifestyle") -> dict:
     cached_posts = get_account_posts(account_id, limit=50)
 
     if len(cached_posts) < 10:
-        print(f"      Only {len(cached_posts)} posts cached — fetching from Instagram...")
-        raw_history = get_account_history(account["handle"], limit=50)
+        print(f"      Only {len(cached_posts)} posts cached — fetching from {platform}...")
+        if platform == "instagram":
+            raw_history = ig_get_history(account["handle"], limit=50)
+        elif platform == "tiktok":
+            raw_history = tt_get_history(account["handle"], limit=50)
         history_posts = [normalize_post(p) for p in raw_history]
         upsert_posts_bulk(history_posts, account_id)
         cached_posts = get_account_posts(account_id, limit=50)
@@ -68,6 +78,8 @@ def run(url: str, niche: str = "lifestyle") -> dict:
 def _detect_platform(url: str) -> str:
     if "instagram.com" in url:
         return "instagram"
+    if "tiktok.com" in url:
+        return "tiktok"
     if "x.com" in url or "twitter.com" in url:
         return "x"
     raise ValueError(f"Unsupported platform for URL: {url}")

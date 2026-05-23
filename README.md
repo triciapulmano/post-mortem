@@ -56,7 +56,7 @@ Two separate ETL pipelines feed one database:
 
 | Layer | Technology | Why |
 |---|---|---|
-| Data extraction | Apify (Instagram scraper) | Handles Instagram's aggressive rate limiting better than direct scraping |
+| Data extraction | Apify (Instagram + TikTok scrapers) | Handles aggressive rate limiting better than direct scraping |
 | ETL orchestration | Python + custom pipeline modules | Simple, readable, easy to extend |
 | Database | PostgreSQL | Relational data with JSONB for platform-specific raw fields |
 | AI scoring | Google Gemini Flash | Free tier, fast, reliable JSON output |
