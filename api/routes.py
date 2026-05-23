@@ -97,7 +97,30 @@ def get_analysis(analysis_id: str):
     conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Analysis not found")
-    return dict(row)
+    
+    result = dict(row)
+    account_id = result.pop("account_id")
+
+    # compute account averages from cached posts
+    cur.execute("""
+        SELECT content_type, engagement_rate, likes, posted_at, raw_data
+        FROM posts
+        WHERE account_id = %s
+        ORDER BY posted_at DESC
+        LIMIT 50
+    """, (account_id,))
+
+    posts = [dict(r) for r in cur.fetchall()]
+    cur.close()
+    conn.close()
+
+    if posts:
+        from etl.transformers.normalize import compute_account_averages
+        result["account_averages"] = compute_account_averages(posts)
+    else:
+        result["account_averages"] = None
+
+    return result
 
 @app.get("/health")
 def health():
