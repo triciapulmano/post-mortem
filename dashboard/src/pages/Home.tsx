@@ -40,7 +40,7 @@ export default function Home() {
       engagement_rate: result.post?.engagement_rate,
       posted_at: result.post?.posted_at,
       };
-      navigate(`/analysis/${result.analysis_id}`, { state: result });
+      navigate(`/analysis/${result.analysis_id}`, { state: normalized });
     } catch (e: any) {
       setError(e.response?.data?.detail || "Something went wrong");
     } finally {
