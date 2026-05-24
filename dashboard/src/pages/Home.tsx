@@ -21,6 +21,25 @@ export default function Home() {
     setError("");
     try {
       const result = await analyzePost(url, niche);
+      const normalized = {
+      ...result,
+      overall_score: result.scores?.overall,
+      score_timing: result.scores?.timing,
+      score_format: result.scores?.format,
+      score_hook: result.scores?.hook,
+      score_topic: result.scores?.topic,
+      score_velocity: result.scores?.velocity,
+      ai_explanation: result.brief,
+      handle: result.handle,
+      platform: result.post?.platform,
+      post_url: result.post?.post_url,
+      caption: result.post?.caption,
+      content_type: result.post?.content_type,
+      likes: result.post?.likes,
+      comments: result.post?.comments,
+      engagement_rate: result.post?.engagement_rate,
+      posted_at: result.post?.posted_at,
+      };
       navigate(`/analysis/${result.analysis_id}`, { state: result });
     } catch (e: any) {
       setError(e.response?.data?.detail || "Something went wrong");
